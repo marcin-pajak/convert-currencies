@@ -50,6 +50,7 @@ App uses fixer.io API service, please add your API key to .env based on .env.exa
 
 ## Possible improvements
 
+- Add action to allow swapping currencies
 - Don't fetch rates/currencies if already in store
 - Add search / autocomplete in CurrencySelect component
 - Handle different types of errors properly, currently only API call errors are handled on the UI
