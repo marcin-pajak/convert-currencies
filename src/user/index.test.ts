@@ -4,6 +4,7 @@ import reducer, {
   setBaseCurrency,
   getBaseCurency
 } from './index';
+import { getState } from '../common/testHelpers';
 
 describe('User', () => {
   test('should create SET_BASE_CURRENCY action', () => {
@@ -20,12 +21,12 @@ describe('User', () => {
   });
 
   test('should handle SET_BASE_CURRENCY and return proper currency', () => {
-    const state = {
+    const state = getState({
       user: reducer(undefined, {
         type: SET_BASE_CURRENCY,
         payload: 'PLN'
       })
-    };
+    });
     expect(state.user).toEqual({ baseCurrency: 'PLN' });
     expect(getBaseCurency(state)).toEqual('PLN');
   });

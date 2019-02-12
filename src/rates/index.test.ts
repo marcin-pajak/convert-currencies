@@ -10,8 +10,11 @@ import reducer, {
   fetchCurrentRatesEpic
 } from './index';
 import { SET_ERROR } from '../ui';
+import { epicService } from '../createStore';
+import { getState } from '../common/testHelpers';
+import { RootState, RatesState, RatesResponse } from '../types';
 
-const rates = {
+const rates: RatesResponse = {
   success: true,
   base: 'EUR',
   date: '2019-02-09',
@@ -21,11 +24,11 @@ const rates = {
     AFN: 85.640091
   }
 };
-const meta = { kind: 'latest' };
+const meta: { kind: 'latest' | 'historical' } = { kind: 'latest' };
 const setRatesAction = {
-  type: SET_RATES,
+  type: SET_RATES as typeof SET_RATES,
   payload: rates,
-  meta: { kind: 'latest' }
+  meta: meta
 };
 
 const transformedRates = {
@@ -35,6 +38,9 @@ const transformedRates = {
     timestamp: 1549735146
   }
 };
+
+const getInitialState = (initial?: Partial<RootState>) =>
+  reducer(initial as RatesState, {} as any);
 
 describe('Rates', () => {
   test('should create FETCH_RATES action', () => {
@@ -49,11 +55,11 @@ describe('Rates', () => {
   });
 
   test('should create SET_RATES action', () => {
-    expect(setRates(rates, meta)).toEqual(setRatesAction);
+    expect(setRates(rates, { kind: 'latest' })).toEqual(setRatesAction);
   });
 
   test('should return default state', () => {
-    const state = { rates: reducer(undefined, {}) };
+    const state = getState({ rates: getInitialState() });
     expect(state.rates).toEqual({});
   });
 
@@ -63,24 +69,30 @@ describe('Rates', () => {
   });
 
   test('should return proper rate', () => {
-    const state = { rates: transformedRates, user: { baseCurrency: 'EUR' } };
+    const state = getState({
+      rates: transformedRates,
+      user: { baseCurrency: 'EUR' }
+    });
     expect(getRate(state, 'AED')).toEqual(rates.rates.AED);
   });
 
   test('should return timestamp of last fetched conversion rate', () => {
-    const state = { rates: transformedRates, user: { baseCurrency: 'EUR' } };
+    const state = getState({
+      rates: transformedRates,
+      user: { baseCurrency: 'EUR' }
+    });
     expect(getLatestTimestamp(state)).toEqual(rates.timestamp);
   });
 
   test('should fetch rates', done => {
-    const getJSON = () => of(rates);
+    epicService.getJSON = jest.fn().mockImplementation(() => of(rates));
     const action$ = ActionsObservable.of({
-      type: FETCH_RATES,
+      type: FETCH_RATES as typeof FETCH_RATES,
       payload: {
         currency: 'EUR'
       }
     });
-    return fetchCurrentRatesEpic(action$, null, { getJSON }).subscribe(
+    return fetchCurrentRatesEpic(action$, null, epicService).subscribe(
       actualOutputActions => {
         expect(actualOutputActions).toEqual(setRatesAction);
         done();
@@ -89,15 +101,17 @@ describe('Rates', () => {
   });
 
   test('should set error when cannot fetch rates', done => {
-    const getJSON = () => throwError('Couldnt load');
+    epicService.getJSON = jest
+      .fn()
+      .mockImplementation(() => throwError('Couldnt load'));
     const action$ = ActionsObservable.of({
-      type: FETCH_RATES,
+      type: FETCH_RATES as typeof FETCH_RATES,
       payload: {
         currency: 'EUR'
       }
     });
-    const expectedAction = { type: SET_ERROR, error: 'Couldnt load' };
-    return fetchCurrentRatesEpic(action$, null, { getJSON }).subscribe(
+    const expectedAction = { type: SET_ERROR, payload: 'Couldnt load' };
+    return fetchCurrentRatesEpic(action$, null, epicService).subscribe(
       actualOutputActions => {
         expect(actualOutputActions).toEqual(expectedAction);
         done();

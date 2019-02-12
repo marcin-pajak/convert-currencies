@@ -8,13 +8,19 @@ import reducer, {
   getCurrenciesWithout,
   fetchCurrenciesEpic
 } from './index';
+import { RootState, CurrenciesState } from '../types';
 import { SET_ERROR } from '../ui';
+import { epicService } from '../createStore';
+import { getState } from '../common/testHelpers';
 
 const payload = { EUR: 'Euro', PLN: 'Polish zloty' };
 const setCurrenciesAction = {
   type: SET_CURRENCIES,
   payload
 };
+
+const getInitialState = (initial?: Partial<RootState>) =>
+  reducer(initial as CurrenciesState, {} as any);
 
 describe('Currencies', () => {
   test('should create FETCH_CURRIENCES action', () => {
@@ -29,7 +35,7 @@ describe('Currencies', () => {
   });
 
   test('should return default state', () => {
-    const state = { currencies: reducer(undefined, {}) };
+    const state = { currencies: getInitialState() };
     expect(state.currencies).toEqual({});
   });
 
@@ -39,7 +45,7 @@ describe('Currencies', () => {
   });
 
   test('should return proper currencies', () => {
-    const state = { currencies: payload };
+    const state = getState({ currencies: payload });
     const transformedCurrencies = [
       { value: 'EUR', label: 'Euro' },
       { value: 'PLN', label: 'Polish zloty' }
@@ -51,11 +57,13 @@ describe('Currencies', () => {
   });
 
   test('should fetch currencies', done => {
-    const getJSON = () => of({ symbols: payload });
+    epicService.getJSON = jest
+      .fn()
+      .mockImplementation(() => of({ symbols: payload }));
     const action$ = ActionsObservable.of({
       type: FETCH_CURRIENCES
     });
-    return fetchCurrenciesEpic(action$, null, { getJSON }).subscribe(
+    return fetchCurrenciesEpic(action$, null, epicService).subscribe(
       actualOutputActions => {
         expect(actualOutputActions).toEqual(setCurrenciesAction);
         done();
@@ -64,12 +72,14 @@ describe('Currencies', () => {
   });
 
   test('should set error when cannot fetch currencies', done => {
-    const getJSON = () => throwError('Couldnt load');
+    epicService.getJSON = jest
+      .fn()
+      .mockImplementation(() => throwError('Couldnt load'));
     const action$ = ActionsObservable.of({
       type: FETCH_CURRIENCES
     });
-    const expectedAction = { type: SET_ERROR, error: 'Couldnt load' };
-    return fetchCurrenciesEpic(action$, null, { getJSON }).subscribe(
+    const expectedAction = { type: SET_ERROR, payload: 'Couldnt load' };
+    return fetchCurrenciesEpic(action$, null, epicService).subscribe(
       actualOutputActions => {
         expect(actualOutputActions).toEqual(expectedAction);
         done();

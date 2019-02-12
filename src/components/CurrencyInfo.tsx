@@ -1,10 +1,18 @@
-import React from 'react';
+import React, { SFC } from 'react';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Error from './Error';
 
-const CurrencyInfo = props => (
+export type CurrencyInfoProps = {
+  baseCurrency: string;
+  targetCurrency: string;
+  date: string;
+  rate: number;
+  error: boolean | string;
+};
+
+const CurrencyInfo: SFC<CurrencyInfoProps> = props => (
   <Card>
     <div className="u-positionRelative">
       <CardContent>

@@ -1,11 +1,19 @@
-import React from 'react';
+import React, { SFC } from 'react';
 import CurrencySelect from './CurrencySelect';
 import TextField from '@material-ui/core/TextField';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
+import { CurrencyOption } from '../types';
 
-const CalculatorFrom = props => (
+export type CalculatorToProps = {
+  currency: string;
+  currencies: CurrencyOption[];
+  onChangeAmount: Function;
+  onChangeCurrency: Function;
+};
+
+const CalculatorFrom: SFC<CalculatorToProps> = props => (
   <Card>
     <CardContent>
       <Typography variant="h5" component="h2" gutterBottom>
@@ -14,7 +22,9 @@ const CalculatorFrom = props => (
       <TextField
         autoFocus={true}
         label="Amount"
-        onChange={event => props.onChangeAmount(event.target.value)}
+        onChange={(event: React.ChangeEvent<HTMLInputElement>): void => {
+          props.onChangeAmount(event.target.value);
+        }}
         inputProps={{
           type: 'number',
           pattern: '^d+(.|,)d{2}$'
@@ -24,7 +34,9 @@ const CalculatorFrom = props => (
       <CurrencySelect
         label="Your currency"
         value={props.currency}
-        onChange={event => props.onChangeCurrency(event.target.value)}
+        onChange={(event: React.FormEvent<HTMLSelectElement>) =>
+          props.onChangeCurrency((event.target as HTMLSelectElement).value)
+        }
         currencies={props.currencies}
         className="u-width50"
       />

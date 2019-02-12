@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, FunctionComponent } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -6,8 +6,21 @@ import CalculatorFrom from '../components/CalculatorFrom';
 import CalculatorTo from '../components/CalculatorTo';
 import CurrencyInfo from '../components/CurrencyInfo';
 import { convertAmount, toDateFromTimestamp } from '../common/helpers';
+import { CurrencyOption } from '../types';
 
-const Converter = props => {
+export type ConverterProps = {
+  hasError: boolean;
+  baseCurrency: string;
+  rate: Function;
+  currenciesFrom: CurrencyOption[];
+  currenciesTo: CurrencyOption[];
+  timestamp: number;
+  fetchRates: Function;
+  fetchCurrencies: Function;
+  setBaseCurrency: Function;
+};
+
+const Converter: FunctionComponent<ConverterProps> = props => {
   const [amountFrom, setAmountFrom] = useState(0);
   const [currencyTo, setCurrencyTo] = useState('USD');
   const rate = props.rate(currencyTo);
@@ -36,8 +49,10 @@ const Converter = props => {
           <CalculatorFrom
             currencies={props.currenciesFrom}
             currency={props.baseCurrency}
-            onChangeAmount={amount => setAmountFrom(amount)}
-            onChangeCurrency={currency => props.setBaseCurrency(currency)}
+            onChangeAmount={(amount: number) => setAmountFrom(amount)}
+            onChangeCurrency={(currency: string) =>
+              props.setBaseCurrency(currency)
+            }
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -45,7 +60,7 @@ const Converter = props => {
             currencies={props.currenciesTo}
             currency={currencyTo}
             convertedAmount={convertAmount(amountFrom, rate)}
-            onChangeCurrency={currency => setCurrencyTo(currency)}
+            onChangeCurrency={(currency: string) => setCurrencyTo(currency)}
             error={error}
           />
         </Grid>

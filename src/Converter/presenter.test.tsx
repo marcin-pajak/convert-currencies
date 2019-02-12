@@ -3,14 +3,17 @@ import ReactDom from 'react-dom';
 import Converter from './presenter';
 
 const props = {
+  hasError: false,
   date: '10 Oct 2018',
   baseCurrency: 'EUR',
   targetCurrency: 'PLN',
   currenciesFrom: [{ value: 'EUR', label: 'Euro' }],
   currenciesTo: [{ value: 'EUR', label: 'Euro' }],
+  timestamp: 1549735121,
   rate: () => 1,
   fetchRates: () => {},
-  fetchCurrencies: () => {}
+  fetchCurrencies: () => {},
+  setBaseCurrency: () => {}
 };
 
 describe('Currency component', () => {

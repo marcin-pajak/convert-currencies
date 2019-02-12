@@ -3,10 +3,11 @@ import { fetchCurrencies, getCurrenciesWithout } from '../currencies';
 import { fetchRates, getRate, getLatestTimestamp } from '../rates';
 import { setBaseCurrency, getBaseCurency } from '../user';
 import { getError } from '../ui';
+import { RootState } from '../types';
 import Converter from './presenter';
 
-const mapStateToProps = state => ({
-  rate: currency => getRate(state, currency),
+const mapStateToProps = (state: RootState) => ({
+  rate: (currency: string) => getRate(state, currency),
   baseCurrency: getBaseCurency(state),
   currenciesFrom: getCurrenciesWithout(state),
   currenciesTo: getCurrenciesWithout(state, getBaseCurency(state)),

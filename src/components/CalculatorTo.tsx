@@ -1,12 +1,21 @@
-import React from 'react';
+import React, { SFC } from 'react';
 import CurrencySelect from './CurrencySelect';
 import TextField from '@material-ui/core/TextField';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Error from './Error';
+import { CurrencyOption } from '../types';
 
-const CalculatorTo = props => (
+export type CalculatorToProps = {
+  currency: string;
+  currencies: CurrencyOption[];
+  convertedAmount: string;
+  error: boolean | string;
+  onChangeCurrency: Function;
+};
+
+const CalculatorTo: SFC<CalculatorToProps> = props => (
   <Card>
     <div className="u-positionRelative">
       <CardContent>
@@ -16,7 +25,9 @@ const CalculatorTo = props => (
         <CurrencySelect
           label="Target currency"
           value={props.currency}
-          onChange={event => props.onChangeCurrency(event.target.value)}
+          onChange={(event: React.FormEvent<HTMLSelectElement>) =>
+            props.onChangeCurrency((event.target as HTMLSelectElement).value)
+          }
           currencies={props.currencies}
           className="u-width50"
         />

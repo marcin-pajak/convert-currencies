@@ -8,6 +8,9 @@ test('should render fine', () => {
     <CalculatorTo
       currency={'PLN'}
       currencies={[{ value: 'PLN', label: 'Polish zloty' }]}
+      convertedAmount="21.00"
+      error={false}
+      onChangeCurrency={value => value}
     />,
     div
   );

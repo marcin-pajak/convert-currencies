@@ -6,8 +6,9 @@ import rates, { ratesEpics } from './rates';
 import ui from './ui';
 import user from './user';
 
+export const epicService = { getJSON: ajax.getJSON };
 const epicMiddleware = createEpicMiddleware({
-  dependencies: { getJSON: ajax.getJSON }
+  dependencies: epicService
 });
 const create = () => {
   const rootReducer = combineReducers({ currencies, rates, user, ui });

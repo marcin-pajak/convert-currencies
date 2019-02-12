@@ -8,6 +8,8 @@ test('should render fine', () => {
     <CalculatorFrom
       currency={'EUR'}
       currencies={[{ value: 'EUR', label: 'Euro' }]}
+      onChangeAmount={value => value}
+      onChangeCurrency={value => value}
     />,
     div
   );
