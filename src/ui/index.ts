@@ -1,5 +1,5 @@
-import { createAction } from 'typesafe-actions';
-import { FETCH_RATES } from '../rates';
+import { createAction, ActionType } from 'typesafe-actions';
+import { fetchRates, FETCH_RATES } from '../rates';
 import { RootState, UIState } from '../types';
 
 /**
@@ -10,14 +10,16 @@ import { RootState, UIState } from '../types';
 export const SET_ERROR: string = 'app/ui/SET_ERROR';
 
 // Action Creators
-// export const setUiError = (error: string) => ({
-//   type: SET_ERROR,
-//   error
-// });
-
 export const setUiError = createAction(SET_ERROR, resolve => (error: string) =>
   resolve(error)
 );
+
+const actions = {
+  fetchRates,
+  setUiError
+};
+
+type Actions = ActionType<typeof actions>;
 
 /**
  * Selectors
@@ -27,10 +29,10 @@ export const getError = (state: RootState): boolean => state.ui.hasError;
 /**
  * Reducers
  */
-
+export const uiDefaultState: UIState = { hasError: false };
 export const ui = (
-  state: UIState = { hasError: false },
-  action: any
+  state: UIState = uiDefaultState,
+  action: Actions
 ): UIState => {
   switch (action.type) {
     case FETCH_RATES:

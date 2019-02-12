@@ -1,12 +1,11 @@
 import { RootState } from '../types';
 import { userStateDefault } from '../user';
+import { uiDefaultState } from '../ui';
 
 const defaultSatte: RootState = {
   currencies: {},
   rates: {},
-  ui: {
-    hasError: false
-  },
+  ui: uiDefaultState,
   user: userStateDefault
 };
 

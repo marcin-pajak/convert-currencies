@@ -4,7 +4,11 @@ import reducer, {
   setBaseCurrency,
   getBaseCurency
 } from './index';
+import { RootState, UserState } from '../types';
 import { getState } from '../common/testHelpers';
+
+const getInitialState = (initial?: Partial<RootState>) =>
+  reducer(initial as UserState, {} as any);
 
 describe('User', () => {
   test('should create SET_BASE_CURRENCY action', () => {
@@ -16,7 +20,7 @@ describe('User', () => {
   });
 
   test('should return default state', () => {
-    const state = { user: reducer(undefined, {}) };
+    const state = { user: getInitialState() };
     expect(state.user).toEqual({ baseCurrency: DEFAULT_CURRENCY });
   });
 
