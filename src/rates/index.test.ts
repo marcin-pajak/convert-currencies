@@ -21,7 +21,8 @@ const rates: RatesResponse = {
   timestamp: 1549735146,
   rates: {
     AED: 4.163757,
-    AFN: 85.640091
+    AFN: 85.640091,
+    EUR: 1
   }
 };
 const meta: { kind: 'latest' | 'historical' } = { kind: 'latest' };
@@ -33,7 +34,7 @@ const setRatesAction = {
 
 const transformedRates = {
   EUR: {
-    dates: { '2019-02-09': { AED: 4.163757, AFN: 85.640091 } },
+    dates: { '2019-02-09': { AED: 4.163757, AFN: 85.640091, EUR: 1 } },
     latest: '2019-02-09',
     timestamp: 1549735146
   }

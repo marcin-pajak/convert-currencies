@@ -2,7 +2,7 @@ import { createAction, ActionType, isActionOf } from 'typesafe-actions';
 import { filter, map, mergeMap, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { Epic } from 'redux-observable';
-import { DEFAULT_CURRENCY, getBaseCurency } from '../user';
+import { REFERENCE_CURRENCY, getBaseCurency } from '../user';
 import { setUiError } from '../ui';
 import { callGet } from '../common/api';
 import { checkResponse } from '../common/helpers';
@@ -25,7 +25,7 @@ export const SET_RATES = 'SET_RATES';
 // Action Creators
 export const fetchRates = createAction(
   FETCH_RATES,
-  resolve => (currency: string = DEFAULT_CURRENCY) => resolve({ currency })
+  resolve => (currency: string = REFERENCE_CURRENCY) => resolve({ currency })
 );
 
 export const setRates = createAction(SET_RATES, resolve => {
@@ -88,21 +88,31 @@ export const rates = (
 };
 
 // Selectors
+export const getRates = (state: RootState, date?: string) => {
+  const currencyState = state.rates[REFERENCE_CURRENCY];
+  const currencyDates = currencyState && currencyState.dates;
+  const latestIndex = currencyState && currencyState.latest;
+  const dateIndex = date || latestIndex;
+  return currencyDates && currencyDates[dateIndex];
+};
+
 /**
  * Get exganche rate from users currency to passed @currencyTo currency
  */
 export const getRate = (
   state: RootState,
-  currencyTo: string
-): number | undefined => {
+  currencyTo: string,
+  date?: string
+): number => {
   const base = getBaseCurency(state);
-  const currencyState = state.rates[base];
-  const currencyDates = currencyState && currencyState.dates;
-  return (
-    currencyDates &&
-    currencyDates[currencyState.latest] &&
-    currencyDates[currencyState.latest][currencyTo]
-  );
+  const rates = getRates(state, date);
+  if (!rates) return 0;
+
+  const currencyFromRate = rates[base];
+  const currencyToRate = rates[currencyTo];
+  const normalizeFrom = 1 / currencyFromRate;
+
+  return normalizeFrom * currencyToRate;
 };
 
 /**

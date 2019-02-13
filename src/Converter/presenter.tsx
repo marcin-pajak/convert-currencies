@@ -29,13 +29,10 @@ const Converter: FunctionComponent<ConverterProps> = props => {
 
   useEffect(() => {
     props.fetchCurrencies();
+    props.fetchRates();
   }, []);
 
-  useEffect(() => {
-    props.fetchRates(props.baseCurrency);
-  }, [props.baseCurrency]);
-
-  if (!props.currenciesFrom.length) {
+  if (!props.currenciesFrom.length || !rate) {
     return <CircularProgress />;
   }
 

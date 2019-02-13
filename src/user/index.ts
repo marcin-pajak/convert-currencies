@@ -6,6 +6,7 @@ import { RootState, UserState } from '../types';
 
 // Types
 export const SET_BASE_CURRENCY: string = 'SET_BASE_CURRENCY';
+export const REFERENCE_CURRENCY: string = 'EUR';
 export const DEFAULT_CURRENCY: string = 'EUR';
 
 // Action Creators
