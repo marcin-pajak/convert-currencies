@@ -37,6 +37,7 @@ export type UIState = {
 
 export type UserState = {
   baseCurrency: string;
+  targetCurrency: string;
 };
 
 export type RootState = {

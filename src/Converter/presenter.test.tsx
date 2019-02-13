@@ -10,10 +10,12 @@ const props = {
   currenciesFrom: [{ value: 'EUR', label: 'Euro' }],
   currenciesTo: [{ value: 'EUR', label: 'Euro' }],
   timestamp: 1549735121,
-  rate: () => 1,
+  points: [],
+  rate: 1,
   fetchRates: () => {},
   fetchCurrencies: () => {},
-  setBaseCurrency: () => {}
+  setBaseCurrency: () => {},
+  setTargetCurrency: () => {}
 };
 
 describe('Currency component', () => {
@@ -28,6 +30,15 @@ describe('Currency component', () => {
     const div = document.createElement('div');
     ReactDom.render(<Converter {...props} currenciesFrom={[]} />, div);
     expect(div.querySelector('[role="progressbar"]')).not.toBe(null);
+    ReactDom.unmountComponentAtNode(div);
+  });
+
+  test('should render error', () => {
+    const div = document.createElement('div');
+    ReactDom.render(<Converter {...props} hasError={true} />, div);
+    expect(div.querySelector('.Error-text').textContent).toBe(
+      "Couldn't load this currency, please try another one."
+    );
     ReactDom.unmountComponentAtNode(div);
   });
 });

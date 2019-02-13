@@ -1,5 +1,6 @@
 import reducer, {
   DEFAULT_CURRENCY,
+  DEFAULT_TARGET_CURRENCY,
   SET_BASE_CURRENCY,
   setBaseCurrency,
   getBaseCurency
@@ -21,7 +22,10 @@ describe('User', () => {
 
   test('should return default state', () => {
     const state = { user: getInitialState() };
-    expect(state.user).toEqual({ baseCurrency: DEFAULT_CURRENCY });
+    expect(state.user).toEqual({
+      baseCurrency: DEFAULT_CURRENCY,
+      targetCurrency: DEFAULT_TARGET_CURRENCY
+    });
   });
 
   test('should handle SET_BASE_CURRENCY and return proper currency', () => {
@@ -31,7 +35,10 @@ describe('User', () => {
         payload: 'PLN'
       })
     });
-    expect(state.user).toEqual({ baseCurrency: 'PLN' });
+    expect(state.user).toEqual({
+      baseCurrency: 'PLN',
+      targetCurrency: DEFAULT_TARGET_CURRENCY
+    });
     expect(getBaseCurency(state)).toEqual('PLN');
   });
 });

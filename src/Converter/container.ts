@@ -1,24 +1,37 @@
 import { connect } from 'react-redux';
 import { fetchCurrencies, getCurrenciesWithout } from '../currencies';
-import { fetchRates, getRate, getLatestTimestamp } from '../rates';
-import { setBaseCurrency, getBaseCurency } from '../user';
+import {
+  fetchRates,
+  getLatestTimestamp,
+  getLast30Rates,
+  getRateMemo
+} from '../rates';
+import {
+  setBaseCurrency,
+  getBaseCurency,
+  getTargetCurrency,
+  setTargetCurrency
+} from '../user';
 import { getError } from '../ui';
 import { RootState } from '../types';
 import Converter from './presenter';
 
 const mapStateToProps = (state: RootState) => ({
-  rate: (currency: string) => getRate(state, currency),
+  rate: getRateMemo(state),
   baseCurrency: getBaseCurency(state),
+  targetCurrency: getTargetCurrency(state),
   currenciesFrom: getCurrenciesWithout(state),
   currenciesTo: getCurrenciesWithout(state, getBaseCurency(state)),
   timestamp: getLatestTimestamp(state),
-  hasError: getError(state)
+  hasError: getError(state),
+  points: getLast30Rates(state)
 });
 
 const mapDispatchToProps = {
   fetchCurrencies,
   fetchRates,
-  setBaseCurrency
+  setBaseCurrency,
+  setTargetCurrency
 };
 
 export default connect(

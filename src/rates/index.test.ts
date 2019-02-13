@@ -5,7 +5,7 @@ import reducer, {
   fetchRates,
   SET_RATES,
   setRates,
-  getRate,
+  getRateMemo,
   getLatestTimestamp,
   fetchCurrentRatesEpic
 } from './index';
@@ -72,9 +72,9 @@ describe('Rates', () => {
   test('should return proper rate', () => {
     const state = getState({
       rates: transformedRates,
-      user: { baseCurrency: 'EUR' }
+      user: { baseCurrency: 'EUR', targetCurrency: 'AED' }
     });
-    expect(getRate(state, 'AED')).toEqual(rates.rates.AED);
+    expect(getRateMemo(state)).toEqual(rates.rates.AED);
   });
 
   test('should return timestamp of last fetched conversion rate', () => {
